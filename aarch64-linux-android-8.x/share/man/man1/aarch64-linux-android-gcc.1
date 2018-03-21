@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "GCC 1"
-.TH GCC 1 "2018-03-01" "gcc-8.0.1" "GNU"
+.TH GCC 1 "2018-03-21" "gcc-8.0.1" "GNU"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -1054,7 +1054,8 @@ See \s-1RS/6000\s0 and PowerPC Options.
 \&\fB\-msave\-restore  \-mno\-save\-restore 
 \&\-mstrict\-align \-mno\-strict\-align 
 \&\-mcmodel=medlow \-mcmodel=medany 
-\&\-mexplicit\-relocs  \-mno\-explicit\-relocs\fR
+\&\-mexplicit\-relocs  \-mno\-explicit\-relocs 
+\&\-mrelax \-mno\-relax\fR
 .Sp
 \&\fI\s-1RL78\s0 Options\fR
 \&\fB\-msim  \-mmul=none  \-mmul=g13  \-mmul=g14  \-mallregs 
@@ -1099,7 +1100,7 @@ See \s-1RS/6000\s0 and PowerPC Options.
 \&\-mdlmzb  \-mno\-dlmzb 
 \&\-mprototype  \-mno\-prototype 
 \&\-msim  \-mmvme  \-mads  \-myellowknife  \-memb  \-msdata 
-\&\-msdata=\fR\fIopt\fR  \fB\-mvxworks  \-G\fR \fInum\fR 
+\&\-msdata=\fR\fIopt\fR  \fB\-mreadonly\-in\-sdata  \-mvxworks  \-G\fR \fInum\fR 
 \&\fB\-mrecip  \-mrecip=\fR\fIopt\fR  \fB\-mno\-recip  \-mrecip\-precision 
 \&\-mno\-recip\-precision 
 \&\-mveclibabi=\fR\fItype\fR  \fB\-mfriz  \-mno\-friz 
@@ -1261,7 +1262,7 @@ See \s-1RS/6000\s0 and PowerPC Options.
 \&\fB\-mmmx  \-msse  \-msse2  \-msse3  \-mssse3  \-msse4.1  \-msse4.2  \-msse4  \-mavx 
 \&\-mavx2  \-mavx512f  \-mavx512pf  \-mavx512er  \-mavx512cd  \-mavx512vl 
 \&\-mavx512bw  \-mavx512dq  \-mavx512ifma  \-mavx512vbmi  \-msha  \-maes 
-\&\-mpclmul  \-mfsgsbase  \-mrdrnd  \-mf16c  \-mfma 
+\&\-mpclmul  \-mfsgsbase  \-mrdrnd  \-mf16c  \-mfma \-mpconfig \-mwbnoinvd 
 \&\-mprefetchwt1  \-mclflushopt  \-mxsavec  \-mxsaves 
 \&\-msse4a  \-m3dnow  \-m3dnowa  \-mpopcnt  \-mabm  \-mbmi  \-mtbm  \-mfma4  \-mxop 
 \&\-mlzcnt  \-mbmi2  \-mfxsr  \-mxsave  \-mxsaveopt  \-mrtm  \-mlwp  \-mmpx  
@@ -6282,7 +6283,7 @@ Warn about One Definition Rule violations during link-time optimization.
 Requires \fB\-flto\-odr\-type\-merging\fR to be enabled.  Enabled by default.
 .IP "\fB\-Wopenmp\-simd\fR" 4
 .IX Item "-Wopenmp-simd"
-Warn if the vectorizer cost model overrides the OpenMP or the Cilk Plus
+Warn if the vectorizer cost model overrides the OpenMP
 simd directive set by user.  The \fB\-fsimd\-cost\-model=unlimited\fR
 option can be used to relax the cost model.
 .IP "\fB\-Woverride\-init\fR (C and Objective-C only)" 4
@@ -8295,7 +8296,7 @@ either \fBdynamic\fR or \fBcheap\fR.
 .IP "\fB\-fsimd\-cost\-model=\fR\fImodel\fR" 4
 .IX Item "-fsimd-cost-model=model"
 Alter the cost model used for vectorization of loops marked with the OpenMP
-or Cilk Plus simd directive.  The \fImodel\fR argument should be one of
+simd directive.  The \fImodel\fR argument should be one of
 \&\fBunlimited\fR, \fBdynamic\fR, \fBcheap\fR.  All values of \fImodel\fR
 have the same meaning as described in \fB\-fvect\-cost\-model\fR and by
 default a cost model defined with \fB\-fvect\-cost\-model\fR is used.
@@ -22256,6 +22257,15 @@ statically or dynamically linked.
 Use or do not use assembler relocation operators when dealing with symbolic
 addresses.  The alternative is to use assembler macros instead, which may
 limit optimization.
+.IP "\fB\-mrelax\fR" 4
+.IX Item "-mrelax"
+.PD 0
+.IP "\fB\-mno\-relax\fR" 4
+.IX Item "-mno-relax"
+.PD
+Take advantage of linker relaxations to reduce the number of instructions
+required to materialize symbol addresses. The default is to take advantage of
+linker relaxations.
 .PP
 \fI\s-1RL78\s0 Options\fR
 .IX Subsection "RL78 Options"
@@ -23269,6 +23279,14 @@ other \fB\-msdata\fR options are used.
 On embedded PowerPC systems, put all initialized global and static data
 in the \f(CW\*(C`.data\*(C'\fR section, and all uninitialized data in the
 \&\f(CW\*(C`.bss\*(C'\fR section.
+.IP "\fB\-mreadonly\-in\-sdata\fR" 4
+.IX Item "-mreadonly-in-sdata"
+.PD 0
+.IP "\fB\-mreadonly\-in\-sdata\fR" 4
+.IX Item "-mreadonly-in-sdata"
+.PD
+Put read-only objects in the \f(CW\*(C`.sdata\*(C'\fR section as well.  This is the
+default.
 .IP "\fB\-mblock\-move\-inline\-limit=\fR\fInum\fR" 4
 .IX Item "-mblock-move-inline-limit=num"
 Inline all block moves (such as calls to \f(CW\*(C`memcpy\*(C'\fR or structure
@@ -25583,22 +25601,31 @@ AVX5124VNNIW, AVX5124FMAPS\s0 and \s-1AVX512VPOPCNTDQ\s0 instruction set support
 Intel Skylake Server \s-1CPU\s0 with 64\-bit extensions, \s-1MOVBE, MMX, SSE, SSE2, SSE3,
 SSSE3, SSE4.1, SSE4.2, POPCNT, PKU, AVX, AVX2, AES, PCLMUL, FSGSBASE, RDRND, FMA,
 BMI, BMI2, F16C, RDSEED, ADCX, PREFETCHW, CLFLUSHOPT, XSAVEC, XSAVES, AVX512F,
-AVX512VL, AVX512BW, AVX512DQ\s0 and \s-1AVX512CD\s0 instruction set support.
+CLWB, AVX512VL, AVX512BW, AVX512DQ\s0 and \s-1AVX512CD\s0 instruction set support.
 .IP "\fBcannonlake\fR" 4
 .IX Item "cannonlake"
 Intel Cannonlake Server \s-1CPU\s0 with 64\-bit extensions, \s-1MOVBE, MMX, SSE, SSE2,
 SSE3, SSSE3, SSE4.1, SSE4.2, POPCNT, PKU, AVX, AVX2, AES, PCLMUL, FSGSBASE,
 RDRND, FMA, BMI, BMI2, F16C, RDSEED, ADCX, PREFETCHW, CLFLUSHOPT, XSAVEC,
 XSAVES, AVX512F, AVX512VL, AVX512BW, AVX512DQ, AVX512CD, AVX512VBMI,
-AVX512IFMA, SHA, CLWB\s0 and \s-1UMIP\s0 instruction set support.
-.IP "\fBIcelake\fR" 4
-.IX Item "Icelake"
-Intel Icelake Server \s-1CPU\s0 with 64\-bit extensions, \s-1MOVBE, MMX, SSE, SSE2,
+AVX512IFMA, SHA\s0 and \s-1UMIP\s0 instruction set support.
+.IP "\fBicelake-client\fR" 4
+.IX Item "icelake-client"
+Intel Icelake Client \s-1CPU\s0 with 64\-bit extensions, \s-1MOVBE, MMX, SSE, SSE2,
 SSE3, SSSE3, SSE4.1, SSE4.2, POPCNT, PKU, AVX, AVX2, AES, PCLMUL, FSGSBASE,
 RDRND, FMA, BMI, BMI2, F16C, RDSEED, ADCX, PREFETCHW, CLFLUSHOPT, XSAVEC,
 XSAVES, AVX512F, AVX512VL, AVX512BW, AVX512DQ, AVX512CD, AVX512VBMI,
 AVX512IFMA, SHA, CLWB, UMIP, RDPID, GFNI, AVX512VBMI2, AVX512VPOPCNTDQ,
 AVX512BITALG, AVX512VNNI, VPCLMULQDQ, VAES\s0 instruction set support.
+.IP "\fBicelake-server\fR" 4
+.IX Item "icelake-server"
+Intel Icelake Server \s-1CPU\s0 with 64\-bit extensions, \s-1MOVBE, MMX, SSE, SSE2,
+SSE3, SSSE3, SSE4.1, SSE4.2, POPCNT, PKU, AVX, AVX2, AES, PCLMUL, FSGSBASE,
+RDRND, FMA, BMI, BMI2, F16C, RDSEED, ADCX, PREFETCHW, CLFLUSHOPT, XSAVEC,
+XSAVES, AVX512F, AVX512VL, AVX512BW, AVX512DQ, AVX512CD, AVX512VBMI,
+AVX512IFMA, SHA, CLWB, UMIP, RDPID, GFNI, AVX512VBMI2, AVX512VPOPCNTDQ,
+AVX512BITALG, AVX512VNNI, VPCLMULQDQ, VAES, PCONFIG\s0 and \s-1WBNOINVD\s0 instruction
+set support.
 .IP "\fBk6\fR" 4
 .IX Item "k6"
 \&\s-1AMD K6 CPU\s0 with \s-1MMX\s0 instruction set support.
@@ -26206,8 +26233,8 @@ preferred alignment to \fB\-mpreferred\-stack\-boundary=2\fR.
 .IX Item "-maes"
 .IP "\fB\-mpclmul\fR" 4
 .IX Item "-mpclmul"
-.IP "\fB\-mclfushopt\fR" 4
-.IX Item "-mclfushopt"
+.IP "\fB\-mclflushopt\fR" 4
+.IX Item "-mclflushopt"
 .IP "\fB\-mfsgsbase\fR" 4
 .IX Item "-mfsgsbase"
 .IP "\fB\-mrdrnd\fR" 4
@@ -26216,6 +26243,10 @@ preferred alignment to \fB\-mpreferred\-stack\-boundary=2\fR.
 .IX Item "-mf16c"
 .IP "\fB\-mfma\fR" 4
 .IX Item "-mfma"
+.IP "\fB\-mpconfig\fR" 4
+.IX Item "-mpconfig"
+.IP "\fB\-mwbnoinvd\fR" 4
+.IX Item "-mwbnoinvd"
 .IP "\fB\-mfma4\fR" 4
 .IX Item "-mfma4"
 .IP "\fB\-mprefetchwt1\fR" 4
@@ -26876,9 +26907,9 @@ You can control this behavior for a specific function by using the
 function attribute \f(CW\*(C`indirect_branch\*(C'\fR.
 .Sp
 Note that \fB\-mcmodel=large\fR is incompatible with
-\&\fB\-mindirect\-branch=thunk\fR nor
+\&\fB\-mindirect\-branch=thunk\fR and
 \&\fB\-mindirect\-branch=thunk\-extern\fR since the thunk function may
-not be reachable in large code model.
+not be reachable in the large code model.
 .Sp
 Note that \fB\-mindirect\-branch=thunk\-extern\fR is incompatible with
 \&\fB\-fcf\-protection=branch\fR and \fB\-fcheck\-pointer\-bounds\fR
@@ -26895,9 +26926,9 @@ object file.  You can control this behavior for a specific function by
 using the function attribute \f(CW\*(C`function_return\*(C'\fR.
 .Sp
 Note that \fB\-mcmodel=large\fR is incompatible with
-\&\fB\-mfunction\-return=thunk\fR nor
+\&\fB\-mfunction\-return=thunk\fR and
 \&\fB\-mfunction\-return=thunk\-extern\fR since the thunk function may
-not be reachable in large code model.
+not be reachable in the large code model.
 .IP "\fB\-mindirect\-branch\-register\fR" 4
 .IX Item "-mindirect-branch-register"
 Force indirect call and jump via register.
